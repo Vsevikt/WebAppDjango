@@ -1,0 +1,249 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    {% if active_task == 'login' %}Login
+    {% elif active_task == 'calculator' %}Numbers
+    {% elif active_task == 'registration' %}Registration
+    {% else %}Date calculation{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="top" class="container page-shell practice-page">
+
+    <header class="page-intro">
+        <span class="eyebrow">FORM</span>
+        <h1>
+            {% if active_task == 'login' %}Login check
+            {% elif active_task == 'calculator' %}Work with numbers
+            {% elif active_task == 'registration' %}User registration
+            {% else %}Calculate a date by year{% endif %}
+        </h1>
+
+        <p>
+            {% if active_task == 'login' %}Enter a username and password to check the login result.
+            {% elif active_task == 'calculator' %}Enter three numbers and choose whether to find the minimum, maximum, or average.
+            {% elif active_task == 'registration' %}Fill in the form and submit the registration details.
+            {% else %}Enter a year to find the date and weekday of its 256th day.{% endif %}
+        </p>
+    </header>
+
+    <div class="form-area">
+
+        {% if active_task == 'login' %}
+        <section class="task-card" aria-labelledby="login-title">
+            <div class="card-topline">
+                <div>
+                    <span class="task-category">LOGIN</span>
+                    <h2 id="login-title">Check username and password</h2>
+                </div>
+                <span class="task-icon icon-violet">↗</span>
+            </div>
+
+            <p class="task-description">Submit sample credentials to see whether the login check succeeds.</p>
+
+            <form method="post" action="{% url 'home' %}" class="task-form">
+                {% csrf_token %}
+
+                <label for="login-username">Username</label>
+                <input class="form-control" id="login-username" name="username" autocomplete="username" placeholder="Enter username" required>
+
+                <label for="login-password">Password</label>
+                <input class="form-control" id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+
+                {% if login_result %}
+                <div class="result-box {% if login_success %}result-success{% else %}result-error{% endif %}" role="status">
+                    {{ login_result }}
+                </div>
+                {% endif %}
+
+                <button class="button button-dark" type="submit">Check login <span>→</span></button>
+            </form>
+        </section>
+
+        {% elif active_task == 'calculator' %}
+        <section class="task-card" aria-labelledby="calculator-title">
+            <div class="card-topline">
+                <div>
+                    <span class="task-category">NUMBERS</span>
+                    <h2 id="calculator-title">Operations with three numbers</h2>
+                </div>
+                <span class="task-icon icon-mint">∑</span>
+            </div>
+
+            <p class="task-description">Enter the values and choose which result to calculate.</p>
+
+            <form method="post" action="{% url 'calculator' %}" class="task-form">
+                {% csrf_token %}
+
+                <div class="number-fields">
+                    <div>
+                        <label for="number-one">Number 1</label>
+                        <input class="form-control" id="number-one" name="number1" type="number" step="any" placeholder="12" required>
+                    </div>
+
+                    <div>
+                        <label for="number-two">Number 2</label>
+                        <input class="form-control" id="number-two" name="number2" type="number" step="any" placeholder="7" required>
+                    </div>
+
+                    <div>
+                        <label for="number-three">Number 3</label>
+                        <input class="form-control" id="number-three" name="number3" type="number" step="any" placeholder="24" required>
+                    </div>
+                </div>
+
+                <fieldset class="choice-group">
+                    <legend>Choose a calculation</legend>
+
+                    <label class="choice-option">
+                        <input type="radio" name="operation" value="min" checked>
+                        <span>Minimum</span>
+                    </label>
+
+                    <label class="choice-option">
+                        <input type="radio" name="operation" value="max">
+                        <span>Maximum</span>
+                    </label>
+
+                    <label class="choice-option">
+                        <input type="radio" name="operation" value="average">
+                        <span>Average</span>
+                    </label>
+                </fieldset>
+
+                {% if calculator_error %}
+                <div class="result-box result-error" role="alert">{{ calculator_error }}</div>
+                {% endif %}
+
+                {% if calculator_result %}
+                <div class="result-box result-success" role="status">
+                    Result: <strong>{{ calculator_result }}</strong>
+                </div>
+                {% endif %}
+
+                <button class="button button-dark" type="submit">Calculate <span>→</span></button>
+            </form>
+        </section>
+
+        {% elif active_task == 'registration' %}
+        <section class="task-card" aria-labelledby="registration-title">
+            <div class="card-topline">
+                <div>
+                    <span class="task-category">REGISTRATION</span>
+                    <h2 id="registration-title">User registration</h2>
+                </div>
+                <span class="task-icon icon-peach">♡</span>
+            </div>
+
+            <p class="task-description">Complete the form and review the submitted details.</p>
+
+            <form method="post" action="{% url 'registration' %}" class="task-form">
+                {% csrf_token %}
+
+                <div class="field-pair">
+                    <div>
+                        <label for="first-name">First name</label>
+                        <input class="form-control" id="first-name" name="first_name" placeholder="Alex" required>
+                    </div>
+
+                    <div>
+                        <label for="last-name">Last name</label>
+                        <input class="form-control" id="last-name" name="last_name" placeholder="Morgan" required>
+                    </div>
+                </div>
+
+                <div class="field-pair">
+                    <div>
+                        <label for="age">Age</label>
+                        <input class="form-control" id="age" name="age" type="number" min="1" max="120" placeholder="25" required>
+                    </div>
+
+                    <div>
+                        <label for="email">Email</label>
+                        <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" required>
+                    </div>
+                </div>
+
+                <fieldset class="choice-group">
+                    <legend>Gender</legend>
+
+                    <label class="choice-option">
+                        <input type="radio" name="gender" value="Female" required>
+                        <span>Female</span>
+                    </label>
+
+                    <label class="choice-option">
+                        <input type="radio" name="gender" value="Male">
+                        <span>Male</span>
+                    </label>
+
+                    <label class="choice-option">
+                        <input type="radio" name="gender" value="Other">
+                        <span>Other</span>
+                    </label>
+                </fieldset>
+
+                <label for="address">Delivery address</label>
+                <textarea class="form-control" id="address" name="address" rows="2" placeholder="City, street, house" required></textarea>
+
+                <label class="check-option">
+                    <input type="checkbox" name="newsletter" value="yes">
+                    <span>Subscribe to news</span>
+                </label>
+
+                {% if registration_result %}
+                <div class="result-box result-success" role="status">
+                    <strong>Submitted details</strong>
+                    <div class="registration-details">{{ registration_result|linebreaksbr }}</div>
+                </div>
+                {% endif %}
+
+                <button class="button button-dark" type="submit">Submit registration <span>→</span></button>
+            </form>
+        </section>
+
+        {% elif active_task == 'programmer_day' %}
+        <section class="task-card" aria-labelledby="programmer-title">
+            <div class="card-topline">
+                <div>
+                    <span class="task-category">YEAR AND DATE</span>
+                    <h2 id="programmer-title">Programmer's Day</h2>
+                </div>
+                <span class="task-icon icon-blue">◷</span>
+            </div>
+
+            <p class="task-description">Find the date of the 256th day in the selected year.</p>
+
+            <form method="post" action="{% url 'programmer_day' %}" class="task-form">
+                {% csrf_token %}
+
+                <label for="year">Year</label>
+
+                <div class="inline-field">
+                    <input class="form-control" id="year" name="year" type="number" min="1" max="9999" placeholder="2026" required>
+                    <button class="button button-dark" type="submit">Find date</button>
+                </div>
+
+                {% if programmer_day_error %}
+                <div class="result-box result-error" role="alert">{{ programmer_day_error }}</div>
+                {% endif %}
+
+                {% if programmer_day_result %}
+                <div class="date-result" role="status">
+                    <span class="date-result-icon">✓</span>
+                    <div>
+                        <span class="result-caption">RESULT</span>
+                        <strong>{{ programmer_day_result }}</strong>
+                        <span class="result-year">{{ programmer_year }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="form-note">The date is calculated as day 256 of the selected year.</div>
+            </form>
+        </section>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

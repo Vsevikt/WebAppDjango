@@ -1,0 +1,43 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Forms{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}?v=2">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <nav class="container site-nav" aria-label="Main navigation">
+            <div class="nav-list">
+                <a class="nav-item-link {% if active_task == 'login' %}is-active{% endif %}" href="{% url 'home' %}">
+                    <strong>Login</strong>
+                    <small>Check a username and password</small>
+                </a>
+                <a class="nav-item-link {% if active_task == 'calculator' %}is-active{% endif %}" href="{% url 'calculator' %}">
+                    <strong>Numbers</strong>
+                    <small>Find min, max, or average</small>
+                </a>
+                <a class="nav-item-link {% if active_task == 'registration' %}is-active{% endif %}" href="{% url 'registration' %}">
+                    <strong>Registration</strong>
+                    <small>Check a registration form</small>
+                </a>
+                <a class="nav-item-link {% if active_task == 'programmer_day' %}is-active{% endif %}" href="{% url 'programmer_day' %}">
+                    <strong>Date calculation</strong>
+                    <small>Find day 256 for a year</small>
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <div class="container site-footer-inner">Form examples</div>
+    </footer>
+    <script src="{% static 'main/js/bootstrap.bundle.min.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
